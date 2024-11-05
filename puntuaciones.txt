@@ -1,1 +1,7 @@
 Jugador,8
+Jugador,8
+Jugador,8
+Jugador,8
+Jugador,8
+Jugador,8
+Jugador,6
