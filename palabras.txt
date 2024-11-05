@@ -1,4 +1,6 @@
-prueba
+ahorcado
 mano
 calcetin
 ahorcado
+Crack
+prueba

@@ -59,14 +59,23 @@ public class RootController implements Initializable {
 
     @FXML
     void onAddAction(ActionEvent event) {
-        String newWord = letterInput.getText();
-        if (newWord != null && !newWord.isEmpty()) {
-            palabrasController.agregarPalabra(newWord);
-            palabrasController.guardarPalabras();
-            actualizarListaPalabras();
-            letterInput.clear();
-        }
+        // Crear un TextInputDialog para ingresar una palabra
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Añadir Palabra");
+        dialog.setHeaderText("¿Qué palabra deseas añadir?");
+        dialog.setContentText("Palabra:");
+
+        // Mostrar el diálogo y obtener la respuesta
+        dialog.showAndWait().ifPresent(palabra -> {
+            if (palabra != null && !palabra.isEmpty()) {
+                // Añadir la palabra al controlador de palabras
+                palabrasController.agregarPalabra(palabra);
+                palabrasController.guardarPalabras(); // Guardar las palabras en el archivo
+                actualizarListaPalabras(); // Actualizar el ListView con las palabras añadidas
+            }
+        });
     }
+
 
     @FXML
     void onLetterAction(ActionEvent event) {
@@ -113,12 +122,38 @@ public class RootController implements Initializable {
                 .toList());
     }
 
+    @FXML
     private void actualizarJuego() {
         guessedLetters.setText(partidaController.getPalabraOculta());
         pointsLabel.setText(String.valueOf(partidaController.getPuntuacion()));
         hangmanImage.setImage(partidaController.getImagenAhorcado());
         usedLetters.setText(partidaController.getLetrasUsadas()); // Muestra las letras usadas
+
+        // Verifica si la partida ha terminado
+        if (partidaController.partidaTerminada(this::mostrarReinicioDialog)) {
+            // Si la partida terminó, ya se mostró el diálogo
+        }
     }
+
+    private void mostrarReinicioDialog() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("¡Juego Terminado!");
+        alert.setHeaderText("¿Quieres volver a jugar?");
+        alert.setContentText("Haz clic en 'Aceptar' para reiniciar.");
+
+        ButtonType buttonTypeOne = new ButtonType("Aceptar");
+        ButtonType buttonTypeTwo = new ButtonType("Cancelar");
+
+        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
+
+        alert.showAndWait().ifPresent(buttonType -> {
+            if (buttonType == buttonTypeOne) {
+                partidaController.iniciarNuevaPartida(); // Reinicia la partida
+                actualizarJuego(); // Actualiza la interfaz
+            }
+        });
+    }
+
 
     public AnchorPane getRoot() {
         return Root;

@@ -56,7 +56,6 @@ public class PartidaController {
         return palabras.get(random.nextInt(palabras.size()));
     }
 
-
     public boolean adivinarLetra(char letra) {
         if (letrasUsadas.contains(letra)) {
             return false; // La letra ya fue usada
@@ -90,16 +89,20 @@ public class PartidaController {
         }
     }
 
-    public boolean partidaTerminada() {
+    public boolean partidaTerminada(Runnable reiniciarCallback) {
         if (vidas <= 0 || palabraOculta.toString().equals(palabraAdivinar)) {
             if (palabraOculta.toString().equals(palabraAdivinar)) {
                 puntuacionesController.agregarPuntuacion("Jugador", puntuacion); // Guarda la puntuación al terminar
                 puntuacionesController.guardarPuntuaciones(); // Persistir puntuaciones
             }
+            if (palabraOculta.toString().equals(palabraAdivinar)) {
+                reiniciarCallback.run(); // Llama al callback para reiniciar el juego
+            }
             return true;
         }
         return false;
     }
+
 
     public String getPalabraOculta() {
         return palabraOculta.toString();
